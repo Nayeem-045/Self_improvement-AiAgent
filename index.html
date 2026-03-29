@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Self-Improving Agent</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>🧠 Self-Improving Agent</h1>
+
+  <h1>
+    <img src="ai.png" class="hero-img">
+  </h1>
+
+  <div class="input-section">
+    <input id="inputText" placeholder="Enter problem..." />
+    <button onclick="runAgent()">Run Agent</button>
+  </div>
+
+  <div id="loader" class="loader hidden"></div>
+
+  <div id="timeline" class="timeline"></div>
+
+  <canvas id="chart"></canvas>
+
+  <div id="changes" class="changes"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    async function runAgent() {
+      const input = document.getElementById("inputText").value;
+      const timeline = document.getElementById("timeline");
+
+      if (!input.trim()) {
+        alert("Please enter a problem");
+        return;
+      }
+
+      timeline.innerHTML = "Processing...";
+
+      try {
+        const response = await fetch("https://md0.app.n8n.cloud/webhook-test/https://your-n8n-domain/webhook/self-improving-agent", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            problem: input
+          })
+        });
+
+        const data = await response.json();
+
+        timeline.innerHTML = `
+          <div><strong>Response:</strong> ${data.reply}</div>
+        `;
+      } catch (error) {
+        timeline.innerHTML = <div style="color:red;">Error connecting to n8n</div>;
+        console.error(error);
+      }
+    }
+  </script>
+
+</body>
+</html>
